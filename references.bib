@@ -1,0 +1,128 @@
+@misc{akivehtari_prior_2025,
+  title = {Prior {{Choice Recommendations}}},
+  author = {{Aki Vehtari}},
+  year = {2025},
+  urldate = {2025-10-01},
+  howpublished = {https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations}
+}
+
+@misc{betancourt_conceptual_2017,
+  title = {A {{Conceptual Introduction}} to {{Hamiltonian Monte Carlo}}},
+  author = {Betancourt, Michael},
+  year = {2017},
+  publisher = {arXiv},
+  doi = {10.48550/ARXIV.1701.02434},
+  urldate = {2025-07-12},
+  abstract = {Hamiltonian Monte Carlo has proven a remarkable empirical success, but only recently have we begun to develop a rigorous understanding of why it performs so well on difficult problems and how it is best applied in practice. Unfortunately, that understanding is confined within the mathematics of differential geometry which has limited its dissemination, especially to the applied communities for which it is particularly important. In this review I provide a comprehensive conceptual account of these theoretical foundations, focusing on developing a principled intuition behind the method and its optimal implementations rather of any exhaustive rigor. Whether a practitioner or a statistician, the dedicated reader will acquire a solid grasp of how Hamiltonian Monte Carlo works, when it succeeds, and, perhaps most importantly, when it fails.},
+  copyright = {arXiv.org perpetual, non-exclusive license},
+  keywords = {FOS: Computer and information sciences,Methodology (stat.ME)},
+  file = {C:\Users\Felix\Zotero\storage\VNJAADYV\Betancourt - 2017 - A Conceptual Introduction to Hamiltonian Monte Car.pdf}
+}
+
+@article{farkas_bayesian_,
+  title = {Bayesian {{Estimation}} of {{DSGE Models}} with {{Hamiltonian Monte Carlo}}},
+  author = {Farkas, Matyas and Tatar, Balint},
+  year = {2023},
+  abstract = {In this paper we adapt the Hamiltonian Monte Carlo (HMC) algorithm to Dynamic Stochastic General Equilibrium (DSGE) models, a method currently applied in various fields owing to its superior sampling and diagnostic properties. We implement it into a freely available state-of-the-art, high-performance software (Stan). We estimate a small-scale textbook New Keynesian model and the Smets-Wouters model using US data. We find that in particular cases the HMC algorithm is faster by over an order of magnitude compared to the standard sampling method. Our results and sampling diagnostics confirm the parameter estimates available in the existing literature. In addition, we find bimodality in the Smets-Wouters model even if we estimate it by using the original tight priors. Finally, we combine the HMC framework with the Sequential Monte Carlo (SMC) algorithm to create a powerful tool which enables us to estimate DSGE models with ill-behaved posterior densities.},
+  langid = {english},
+  file = {C:\Users\Felix\Zotero\storage\GSRMVUWU\Farkas and Tatar - Bayesian Estimation of DSGE Models with Hamiltonian Monte Carlo.pdf}
+}
+
+@book{gelman_bayesian_2013,
+  title = {Bayesian {{Data Analysis}}},
+  author = {Gelman, Andrew and Carlin, John B. and Stern, Hal S. and Dunson, David B. and Vehtari, Aki and Rubin, Donald B.},
+  year = {2013},
+  month = nov,
+  edition = {0},
+  publisher = {{Chapman and Hall/CRC}},
+  doi = {10.1201/b16018},
+  urldate = {2025-08-05},
+  isbn = {978-0-429-11307-9},
+  langid = {english}
+}
+
+@article{hoffman_nouturn_2014,
+  title = {The {{No-U-Turn Sampler}}: {{Adaptively Setting Path Lengths}} in {{Hamiltonian Monte Carlo}}},
+  author = {Hoffman, Matthew D and Gelman, Andrew},
+  year = {2014},
+  volume = {15},
+  number = {47},
+  pages = {1593-1623},
+  abstract = {Hamiltonian Monte Carlo (HMC) is a Markov chain Monte Carlo (MCMC) algorithm that avoids the random walk behavior and sensitivity to correlated parameters that plague many MCMC methods by taking a series of steps informed by first-order gradient information. These features allow it to converge to high-dimensional target distributions much more quickly than simpler methods such as random walk Metropolis or Gibbs sampling. However, HMC's performance is highly sensitive to two user-specified parameters: a step size and a desired number of steps L. In particular, if L is too small then the algorithm exhibits undesirable random walk behavior, while if L is too large the algorithm wastes computation. We introduce the No-U-Turn Sampler (NUTS), an extension to HMC that eliminates the need to set a number of steps L. NUTS uses a recursive algorithm to build a set of likely candidate points that spans a wide swath of the target distribution, stopping automatically when it starts to double back and retrace its steps. Empirically, NUTS performs at least as efficiently as (and sometimes more efficiently than) a well tuned standard HMC method, without requiring user intervention or costly tuning runs. We also derive a method for adapting the step size parameter on the fly based on primal-dual averaging. NUTS can thus be used with no hand-tuning at all, making it suitable for applications such as BUGS-style automatic inference engines that require efficient ``turnkey'' samplers.},
+  langid = {english},
+  file = {C:\Users\Felix\Zotero\storage\AW44MNWE\Hoﬀman and Gelman - The No-U-Turn Sampler Adaptively Setting Path Len.pdf}
+}
+
+@misc{magnusson_posteriordb_2024,
+  title = {Posteriordb: {{Testing}}, {{Benchmarking}} and {{Developing Bayesian Inference Algorithms}}},
+  shorttitle = {Posteriordb},
+  author = {Magnusson, M{\aa}ns and Torgander, Jakob and B{\"u}rkner, Paul-Christian and Zhang, Lu and Carpenter, Bob and Vehtari, Aki},
+  year = {2024},
+  month = jul,
+  number = {arXiv:2407.04967},
+  eprint = {2407.04967},
+  primaryclass = {stat},
+  publisher = {arXiv},
+  doi = {10.48550/arXiv.2407.04967},
+  urldate = {2025-09-17},
+  abstract = {The generality and robustness of inference algorithms is critical to the success of widely used probabilistic programming languages such as Stan, PyMC, Pyro, and Turing.jl. When designing a new general-purpose inference algorithm, whether it involves Monte Carlo sampling or variational approximation, the fundamental problem arises in evaluating its accuracy and efficiency across a range of representative target models. To solve this problem, we propose posteriordb2 , a database of models and data sets defining target densities along with reference Monte Carlo draws. We further provide a guide to the best practices in using posteriordb for model evaluation and comparison. To provide a wide range of realistic target densities, posteriordb currently comprises 120 representative models and has been instrumental in developing several general inference algorithms.},
+  archiveprefix = {arXiv},
+  langid = {english},
+  keywords = {Statistics - Computation},
+  file = {C:\Users\Felix\Zotero\storage\SQ83SWU9\Magnusson et al. - 2024 - posteriordb Testing, Benchmarking and Developing Bayesian Inference Algorithms.pdf}
+}
+
+@book{neal_mcmc_2011,
+  title = {{{MCMC}} Using {{Hamiltonian}} Dynamics},
+  author = {Neal, Radford M.},
+  year = {2011},
+  month = may,
+  eprint = {1206.1901},
+  primaryclass = {stat},
+  doi = {10.1201/b10905},
+  urldate = {2025-07-14},
+  abstract = {Hamiltonian dynamics can be used to produce distant proposals for the Metropolis algorithm, thereby avoiding the slow exploration of the state space that results from the diffusive behaviour of simple random-walk proposals. Though originating in physics, Hamiltonian dynamics can be applied to most problems with continuous state spaces by simply introducing fictitious "momentum" variables. A key to its usefulness is that Hamiltonian dynamics preserves volume, and its trajectories can thus be used to define complex mappings without the need to account for a hard-to-compute Jacobian factor - a property that can be exactly maintained even when the dynamics is approximated by discretizing time. In this review, I discuss theoretical and practical aspects of Hamiltonian Monte Carlo, and present some of its variations, including using windows of states for deciding on acceptance or rejection, computing trajectories using fast approximations, tempering during the course of a trajectory to handle isolated modes, and short-cut methods that prevent useless trajectories from taking much computation time.},
+  archiveprefix = {arXiv},
+  langid = {english},
+  keywords = {Physics - Computational Physics,Statistics - Computation},
+  file = {C:\Users\Felix\Zotero\storage\SHK5W7BB\Neal - 2011 - MCMC using Hamiltonian dynamics.pdf}
+}
+
+@article{neal_slice_2003,
+  title = {Slice Sampling},
+  author = {Neal, Radford M.},
+  year = {2003},
+  month = jun,
+  journal = {The Annals of Statistics},
+  volume = {31},
+  number = {3},
+  issn = {0090-5364},
+  doi = {10.1214/aos/1056562461},
+  urldate = {2025-09-17},
+  file = {C:\Users\Felix\Zotero\storage\BQFXUL8J\Neal - 2003 - Slice sampling.pdf}
+}
+
+@misc{pagani_ndimensional_2020,
+  title = {An N-Dimensional {{Rosenbrock Distribution}} for {{MCMC Testing}}},
+  author = {Pagani, Filippo and Wiegand, Martin and Nadarajah, Saralees},
+  year = {2020},
+  month = may,
+  number = {arXiv:1903.09556},
+  eprint = {1903.09556},
+  primaryclass = {stat},
+  publisher = {arXiv},
+  doi = {10.48550/arXiv.1903.09556},
+  urldate = {2025-09-17},
+  abstract = {The Rosenbrock function is an ubiquitous benchmark problem for numerical optimisation, and variants have been proposed to test the performance of Markov Chain Monte Carlo algorithms. In this work we discuss the two-dimensional Rosenbrock density, its current n-dimensional extensions, and their advantages and limitations. We then propose a new extension to arbitrary dimensions called the Hybrid Rosenbrock distribution, which is composed of conditional normal kernels arranged in such a way that preserves the key features of the original kernel. Moreover, due to its structure, the Hybrid Rosenbrock distribution is analytically tractable and possesses several desirable properties, which make it an excellent test model for computational algorithms.},
+  archiveprefix = {arXiv},
+  langid = {english},
+  keywords = {Computer Science - Numerical Analysis,Mathematics - Numerical Analysis,Statistics - Computation},
+  file = {C:\Users\Felix\Zotero\storage\IUES6ASQ\Pagani et al. - 2020 - An n-dimensional Rosenbrock Distribution for MCMC Testing.pdf}
+}
+
+@misc{standevelopmentteam_stan_2025,
+  title = {Stan {{Reference Manual}}, {{Version}} 2.36},
+  author = {{Stan Development Team}},
+  year = {2025},
+  annotation = {Version 2.36.0}
+}
