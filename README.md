@@ -1,2 +1,2 @@
 # BSDA_project
-Project in course: Bayes Statistics and Data Analysis
+Project in course: Bayesian Statistics and Data Analysis
