@@ -35,7 +35,7 @@ model {
       for(i in 3:ni) {
         int idx_cur = idx_first + (i-2);  // index of x_[j,i]
         int idx_prev = idx_cur - 1;  // index of x_[j,i-1]
-		target += normal_lpdf(X[n, idx_cur] | square(X[n, idx_prev]), inv_sqrt(2 * b));
+        target += normal_lpdf(X[n, idx_cur] | square(X[n, idx_prev]), inv_sqrt(2 * b));
       }
     }
   }

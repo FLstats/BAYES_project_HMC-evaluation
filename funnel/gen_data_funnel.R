@@ -90,7 +90,7 @@ cnfgs <- data.frame(
 )
 
 data_gen_fun(stan_file = "stan/simulate-data_funnel.stan",
-             P = 99,
+             P = 9,
              configs = cnfgs)
 
 

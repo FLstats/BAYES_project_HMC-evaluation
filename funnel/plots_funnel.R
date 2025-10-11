@@ -102,7 +102,7 @@ plot_grid <- function(xi, sigma_vals) {
   
 }
 
-plot_grid(xi = "x9", sigma_vals = 1:9)
+plot_grid(xi = "x1", sigma_vals = 1:9)
 
 
 

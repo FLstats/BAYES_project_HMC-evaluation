@@ -75,6 +75,33 @@ calc_metrics <- function(nj, ni) {
 metrics <- calc_metrics(nj = 2, ni = 3)
 
 
+#### #### #### #### #### #### #### #### #### #### #### #### #### #### #### ####
+#                                                                             #
+#                             RMSE ERRORBAR PLOT                              #
+#                                                                             #
+#### #### #### #### #### #### #### #### #### #### #### #### #### #### #### ####
+plot_df_mu <- matrix(NA, nrow = length(metrics), ncol = 4) %>% as.data.frame()
+colnames(plot_df_mu) <- c("rmse_point", "rmse_lower", "rmse_upper", "set")
+
+for (i in 1:length(metrics)) {
+  plot_df_mu[i, 1] <- metrics[[i]]$rmse_point[1]
+  plot_df_mu[i, 2] <- metrics[[i]]$rmse_ci[1, 1]
+  plot_df_mu[i, 3] <- metrics[[i]]$rmse_ci[2, 1]
+  plot_df_mu[i, 4] <- i
+}
+
+ggplot(data = plot_df_mu, aes(x = rmse_point, y = set)) +
+  geom_point() +
+  geom_errorbar(aes(xmin = rmse_lower, xmax = rmse_upper), width = 0.2) +
+  scale_y_continuous(breaks = 1:9) +
+  scale_x_log10() +
+  labs(x = "RMSE", y = "Set") +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+
+
 
 
 

@@ -74,13 +74,31 @@ calc_metrics <- function(P) {
 metrics <- calc_metrics(P = 9)
 
 
+#### #### #### #### #### #### #### #### #### #### #### #### #### #### #### ####
+#                                                                             #
+#                             RMSE ERRORBAR PLOT                              #
+#                                                                             #
+#### #### #### #### #### #### #### #### #### #### #### #### #### #### #### ####
+plot_df <- matrix(NA, nrow = length(metrics), ncol = 4) %>% as.data.frame()
+colnames(plot_df) <- c("rmse_point", "rmse_lower", "rmse_upper", "sigma_v")
 
+for (i in 1:length(metrics)) {
+  plot_df[i, 1] <- metrics[[i]]$rmse_point
+  plot_df[i, 2] <- metrics[[i]]$rmse_ci[1, ]
+  plot_df[i, 3] <- metrics[[i]]$rmse_ci[2, ]
+  plot_df[i, 4] <- metrics[[i]]$config
+}
 
-
-
-
-
-
+ggplot(data = plot_df, aes(x = rmse_point, y = sigma_v)) +
+  geom_point() +
+  geom_errorbar(aes(xmin = rmse_lower, xmax = rmse_upper), width = 0.2) +
+  scale_y_continuous(breaks = 1:9) +
+  scale_x_log10(breaks = c(0.1, 1, 10, 30)) +
+  labs(x = "RMSE", y = bquote(sigma[nu])) +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  )
 
 
 

@@ -158,7 +158,11 @@ plots <- lapply(g_idx, function(i) {
     np_style = div_style
   ) +
     labs(
-      x = bquote(alpha[g[.(i)]]),
+      # x = bquote(alpha[g[.(i)]]),
+      # x = bquote(alpha[g*.(i)]),
+      # x = bquote(alpha[g[.(as.character(i))]]),
+      # x = bquote(alpha * plain("_g[")(.(i)) * plain("]")),
+      x = bquote(alpha[.(i)]),
       y = expression(log(sigma[alpha]))
     ) +
     coord_cartesian(xlim = xlim, ylim = ylim) +

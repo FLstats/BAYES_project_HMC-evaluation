@@ -14,8 +14,8 @@ data {
 
 transformed data {
   int n_dim = (ni-1)*nj+1;  // Total dimension
-  real sd1 = 1/sqrt(2*a);
-  real sd_b = 1/sqrt(2*b);
+  real sd1 = 1/sqrt(2*a);  // Root variable sd
+  real sd_b = 1/sqrt(2*b);  // sd of variables (excl. root)
 }
 
 generated quantities {
