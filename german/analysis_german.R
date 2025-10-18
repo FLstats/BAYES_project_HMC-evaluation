@@ -73,7 +73,7 @@ betas_top <- betas %>%
 
 # Caterpillar plot
 ggplot(betas_top, aes(x = i, y = ORmed, ymin = ORlo, ymax = ORhi)) +
-  geom_hline(yintercept = 1, linetype = 2, lwd = 0.5) +
+  geom_hline(yintercept = 1, linetype = 2, lwd = 0.5, color = "darkgrey") +
   # geom_pointrange(size = 0.5, color = cbbPalette[6]) +
   geom_errorbar(width = 0.3) +
   geom_point(size = 2, color = cbbPalette[6]) +
@@ -83,7 +83,7 @@ ggplot(betas_top, aes(x = i, y = ORmed, ymin = ORlo, ymax = ORhi)) +
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank())
 
-# ggsave("plots/cpplot_betas_med-or.pdf", width = 6, height = 5)
+ggsave("plots/cpplot_betas_med-or.pdf", width = 6, height = 5)
 
 ### INSPECT ONE PARAMETER
 draws %>% pull("beta[3]") %>% exp() %>% median()

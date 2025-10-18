@@ -57,10 +57,14 @@ calc_metrics <- function(P) {
       quantile(sqrt(se), probs = c(0.025, 0.975))
     })
     
+    # RHAT
+    rhats <- summary(stanfits[[i]]$fit)$summary[, "Rhat"]
+    
     # OUTPUT LIST OF RESULTS
     results[[i]] <- list(
       rmse_point = rmse_point,
       rmse_ci = rmse_ci,
+      rhats = rhats,
       config = truth
     )
     # End of for loop
@@ -90,8 +94,8 @@ for (i in 1:length(metrics)) {
 }
 
 ggplot(data = plot_df, aes(x = rmse_point, y = sigma_v)) +
-  geom_point() +
-  geom_errorbar(aes(xmin = rmse_lower, xmax = rmse_upper), width = 0.2) +
+  geom_point(size = 2, shape = 15, color = cbbPalette[6]) +
+  geom_errorbar(aes(xmin = rmse_lower, xmax = rmse_upper), width = 0.3) +
   scale_y_continuous(breaks = 1:9) +
   scale_x_log10(breaks = c(0.1, 1, 10, 30)) +
   labs(x = "RMSE", y = bquote(sigma[nu])) +
@@ -100,13 +104,35 @@ ggplot(data = plot_df, aes(x = rmse_point, y = sigma_v)) +
     panel.grid.minor = element_blank()
   )
 
+ggsave("plots/rmse_errorbar.pdf", width = 6, height = 5)
 
 
 
 
 
+#### #### #### #### #### #### #### #### #### #### #### #### #### #### #### ####
+#                                                                             #
+#                                   SLASK                                     #
+#                                                                             #
+#### #### #### #### #### #### #### #### #### #### #### #### #### #### #### ####
+### Make global sd (does not work)
+dfs <- lapply(stanfits, function(x) as_draws_df(x$fit))
+all_draws <- do.call(rbind, dfs)
+sd_global <- sd(all_draws$sigma_v)
 
-
+### Largest Rhats
+# imap() allplies a function all elements of the rhat-list
+# where each element is a vector
+#   .x = contents of each list element
+#   .y = name of each list element
+# enframe() converts the rhat-vector to a data frame
+rhats <- lapply(metrics, function(x) x$rhats)
+imap(rhats, ~ enframe(.x, name = "parameter", value = "rhat") %>%
+       mutate(dataset = .y)) %>%
+  bind_rows() %>%
+  arrange(desc(rhat)) %>%
+  mutate(rhat = format(rhat, digits = 3)) %>%
+  print(n = Inf)
 
 
 
