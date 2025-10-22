@@ -57,7 +57,7 @@ data_gen_fun <- function(stan_file, configs) {
     sim <- sampling(mod_sim,
                     data = data_list,
                     algorithm = "Fixed_param", # Stan only runs generated quantities
-                    seed = 42,
+                    seed = 42+i,
                     iter = 1, # generates one data set (iter*chains)
                     chains = 1
     )
@@ -65,13 +65,15 @@ data_gen_fun <- function(stan_file, configs) {
     # --------------------------------------------------- #
     #               EXTRACT SIMULATED DATA                #
     # --------------------------------------------------- #
+    true_v <- rstan::extract(sim)$v
     X_array <- rstan::extract(sim)$X # dim: [1, N, P]
     X_mat <- drop(X_array) # dim: [N, P]
     sim_df <- as.data.frame(X_mat)
-    colnames(sim_df) <- c("V", paste0("X", rep(1:P)))
+    colnames(sim_df) <- paste0("x", rep(1:P))
     
     out <- list(
       "data" = sim_df,
+      "true_v" = true_v,
       "P" = P
     )
     
@@ -87,6 +89,7 @@ data_gen_fun <- function(stan_file, configs) {
 # --------------------------------------------------- #
 cnfgs <- data.frame(
   P = c(3, 6, 9, 12, 15, 18, 21, 24, 27)
+  # P = 3
 )
 
 data_gen_fun(stan_file = "stan/simulate-data_funnel.stan",
@@ -95,7 +98,7 @@ data_gen_fun(stan_file = "stan/simulate-data_funnel.stan",
 
 
 ###
-d <- read_rds(file.path(getwd(), "data", "funnel_gen_data_P=27.rds"))
+d <- read_rds(file.path(getwd(), "data", "funnel_gen_data_P=9.rds"))
 d$data
 
 

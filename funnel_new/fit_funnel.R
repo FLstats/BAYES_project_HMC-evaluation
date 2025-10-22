@@ -51,8 +51,8 @@ fit_fun <- function(stan_file) {
   # FIT EACH DATA SET ONE AT A TIME
   for (i in seq_len(K)) {
     
-    X <- datasets[[i]]$data[-1]
-    V <- datasets[[i]]$data[1]
+    X <- datasets[[i]]$data
+    true_v <- datasets[[i]]$true_v
     P <- datasets[[i]]$P
     
     N <- nrow(X)
@@ -64,7 +64,7 @@ fit_fun <- function(stan_file) {
     
     out <- list(
       "fit" = fit,
-      "V" = V,
+      "true_v" = true_v,
       "P" = P
     )
     

@@ -68,14 +68,14 @@ datasets <- lapply(data_files, readRDS)
 K <- length(datasets)
 
 
-plot_grid <- function(xi, sigma_vals) {
+plot_grid <- function(xi) {
   
   plots <- list()
   
   for (i in seq_len(K)) {
     df <- datasets[[i]]$data
     
-    plot <- ggplot(df, aes(x = .data[[xi]], y = v)) +
+    plot <- ggplot(df, aes(x = .data[[xi]], y = V)) +
       geom_point(alpha = 0.3, size = 0.6) +
       stat_density_2d(
         aes(fill = after_stat(level)),
@@ -83,12 +83,14 @@ plot_grid <- function(xi, sigma_vals) {
         contour_var = "ndensity",
         bins = 9,
         n = 300,
-        h = c(bw.nrd(df[[xi]]), bw.nrd(df$v))
+        h = c(bw.nrd(df[[xi]]), bw.nrd(df$V))
       ) +
       scale_fill_viridis_c(guide = "none") +
-      labs(x = xi, y = "v",
+      labs(x = xi,
            # title = paste("sigma_v =", sigma_v[i]),
-           title = bquote(sigma[v] == .(sigma_vals[i]))) +
+           # title = bquote(sigma[v] == .(sigma_vals[i])),
+           y = "v"
+           ) +
       theme_bw(base_size = 9) +
       theme(panel.grid = element_blank(),
             plot.title = element_text(size = 9, hjust = 0.5))
@@ -101,7 +103,7 @@ plot_grid <- function(xi, sigma_vals) {
   
 }
 
-plot_grid(xi = "x1", sigma_vals = 1:9)
+plot_grid(xi = "X1")
 
 
 

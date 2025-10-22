@@ -31,11 +31,11 @@ library(bayesplot)
 theme_set(theme_bw(base_family = "serif", base_size = 14))
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-calc_metrics <- function(P) {
+calc_metrics <- function() {
   
   mypath <- getwd()
   fit_path <- file.path(mypath, "stanfits")
-  fit_files <- list.files(fit_path, pattern = paste0("P=", P, ".*\\.rds$"),
+  fit_files <- list.files(fit_path, pattern = paste0("funnel_fit", ".*\\.rds$"),
                           full.names = TRUE)
   stanfits <- lapply(fit_files, readRDS)
   K <- length(stanfits)
@@ -46,26 +46,48 @@ calc_metrics <- function(P) {
   for (i in seq_len(K)) {
     
     draws <- stanfits[[i]]$fit %>% as_draws_df()
-    truth <- stanfits[[i]]$config
-    params <- "sigma_v"
+    true_v <- stanfits[[i]]$true_v
+    params <- "v"
     
     # RMSE
-    sq_err <- sweep(draws[, params], 2, as.numeric(truth), "-")^2
+    sq_err <- sweep(draws[, params], 2, true_v, "-")^2
     rmse_point <- sqrt(colMeans(sq_err))
     # Take sqrt() to get back squared errors to "error scale".
-    rmse_ci <- apply(sq_err, 2, function(se) {
+    rmse_abs_q <- apply(sq_err, 2, function(se) {
       quantile(sqrt(se), probs = c(0.025, 0.975))
     })
     
     # RHAT
     rhats <- summary(stanfits[[i]]$fit)$summary[, "Rhat"]
     
+    # POSTERIOR QUANTITIES
+    post_v <- draws$v
+    post_mcse <- mcse_mean(post_v)
+    post_mean <- mean(post_v)
+    post_sd <- sd(post_v)
+    
+    # rounding
+    count_leading_zeros <- function(x) {
+      s <- format(x, scientific = FALSE, trim = TRUE)
+      if (!grepl("\\.", s)) return(0)  # no decimal point
+      digits <- sub("^[^.]*\\.", "", s)           # remove everything before "."
+      zeros <- regexpr("[1-9]", digits) - 1       # count zeros before first nonzero
+      ifelse(zeros < 0, 0, zeros)
+    }
+    digits <- count_leading_zeros(post_mcse)
+    post_mean <- round(post_mean, digits)
+    post_sd <- round(post_sd, digits)
+    
     # OUTPUT LIST OF RESULTS
     results[[i]] <- list(
       rmse_point = rmse_point,
-      rmse_ci = rmse_ci,
+      rmse_abs_q = rmse_abs_q,
       rhats = rhats,
-      config = truth
+      true_v = stanfits[[i]]$true_v,
+      P = stanfits[[i]]$P,
+      post_mean = post_mean,
+      post_sd = post_sd,
+      post_mcse = post_mcse
     )
     # End of for loop
   }
@@ -75,7 +97,7 @@ calc_metrics <- function(P) {
 }
 
 
-metrics <- calc_metrics(P = 9)
+metrics <- calc_metrics()
 
 
 #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### ####
@@ -84,21 +106,26 @@ metrics <- calc_metrics(P = 9)
 #                                                                             #
 #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### ####
 plot_df <- matrix(NA, nrow = length(metrics), ncol = 4) %>% as.data.frame()
-colnames(plot_df) <- c("rmse_point", "rmse_lower", "rmse_upper", "sigma_v")
+colnames(plot_df) <- c("rmse_point", "rmse_lower", "rmse_upper", "P")
 
 for (i in 1:length(metrics)) {
   plot_df[i, 1] <- metrics[[i]]$rmse_point
-  plot_df[i, 2] <- metrics[[i]]$rmse_ci[1, ]
-  plot_df[i, 3] <- metrics[[i]]$rmse_ci[2, ]
-  plot_df[i, 4] <- metrics[[i]]$config
+  plot_df[i, 2] <- metrics[[i]]$rmse_abs_q[1, ]
+  plot_df[i, 3] <- metrics[[i]]$rmse_abs_q[2, ]
+  plot_df[i, 4] <- metrics[[i]]$P
 }
 
-ggplot(data = plot_df, aes(x = rmse_point, y = sigma_v)) +
+# Correct order of P
+plot_df <- plot_df %>%
+  arrange(P)
+
+ggplot(data = plot_df, aes(x = rmse_point, y = P)) +
   geom_point(size = 2, shape = 15, color = cbbPalette[6]) +
   geom_errorbar(aes(xmin = rmse_lower, xmax = rmse_upper), width = 0.3) +
-  scale_y_continuous(breaks = 1:9) +
-  scale_x_log10(breaks = c(0.1, 1, 10, 30)) +
-  labs(x = "RMSE", y = bquote(sigma[nu])) +
+  scale_y_continuous(breaks = seq(3,27,3)) +
+  # scale_x_log10() +
+  labs(x = "RMSE (point)", y = "Dimensionality of X",
+       subtitle = "Bars show 5–95% posterior interval of |v − v_true| within each datasetr") +
   theme(
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank()
@@ -106,6 +133,11 @@ ggplot(data = plot_df, aes(x = rmse_point, y = sigma_v)) +
 
 ggsave("plots/rmse_errorbar.pdf", width = 6, height = 5)
 
+#### #### #### #### #### #### #### #### #### #### #### #### #### #### #### ####
+#                                                                             #
+#                           ***********                                       #
+#                                                                             #
+#### #### #### #### #### #### #### #### #### #### #### #### #### #### #### ####
 
 
 
@@ -135,6 +167,19 @@ imap(rhats, ~ enframe(.x, name = "parameter", value = "rhat") %>%
   print(n = Inf)
 
 
+###
+# X is your N x P matrix from the dataset you fit
+d <- read_rds(file.path(getwd(), "data", "funnel_gen_data_P=12.rds"))
+X <- d$data
+
+s2 <- mean(X^2)
+v_mle <- log(s2)
+
+post <- draws$v
+c(mean_post = mean(post),
+  sd_post   = sd(post),
+  v_mle     = v_mle,
+  approx_sd = sqrt(2 / (nrow(X)*ncol(X))))
 
 
 

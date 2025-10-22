@@ -4,13 +4,11 @@ data {
 }
 
 generated quantities {
-  matrix[N, P+1] X;
+  matrix[N, P] X;
+  real v = normal_rng(0, 3);
 
   for(n in 1:N) {
-    real v = normal_rng(0, 3);
-    X[n, 1] = v;
-	
-    for(p in 2:P+1) {
+    for(p in 1:P) {
       X[n, p] = normal_rng(0, sqrt(exp(v)));
     }
   }
