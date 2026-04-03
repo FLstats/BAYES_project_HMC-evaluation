@@ -36,8 +36,6 @@ fit <- readRDS(file.path(getwd(), "stanfits", "hlr_fit_mlvl_alpha=ncp_beta=ncp_P
 
 draws <- posterior::as_draws_df(fit)
 
-
-
 # --------------------------------------------------- #
 #       Caterpillar plot of OR median for betas       #
 # --------------------------------------------------- #
@@ -111,7 +109,6 @@ alpha_groups %>%
   geom_point(size = 2, color = cbbPalette[6]) +
   geom_errorbar(aes(xmin=.lower, xmax=.upper), width = 0.1) +
   labs(x = "Group-intercept effect (OR)", y = "Group")
-
 
 
 #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### ####
@@ -196,65 +193,3 @@ rhats <- rhat(fit)
 summary(rhats)
 rhats[order(rhats, decreasing = T)[1:10]] # 10 largest rhats
 rhats[rhats > 1.01]
-
-
-
-
-
-#### #### #### #### #### #### #### #### #### #### #### #### #### #### #### ####
-#                                                                             #
-#                                 SLASK                                       #
-#                                                                             #
-#### #### #### #### #### #### #### #### #### #### #### #### #### #### #### ####
-# ----------------------------------------- #
-###     Histogram of log_sigma_alpha_g    ###
-# ----------------------------------------- #
-posterior_df %>%
-  mutate(log_sigma_alpha_g = log(sigma_alpha_g)) %>%
-  mcmc_hist(., pars = "log_sigma_alpha_g")
-
-# ----------------------------------------- #
-###             SCATTER PLOT              ###
-# ----------------------------------------- #
-# Set sd param on vertical axis to potentially see funnel shape.
-# Actual param and sd should be correlated.
-# Raw param and sd should ideally be uncorrelated.
-# If we see funnel shape in Raw + sd, something needs to be changed.
-mcmc_scatter(posterior_array, 
-             pars = c("alpha_g[4]", "sigma_alpha_g"), 
-             np = np,
-             transform = list(sigma_alpha_g = "log"), # more interpretable axis
-             size=1,
-             np_style = div_style)
-# ----------------------------------------- #
-###               RANDOM PLOTS            ###
-# ----------------------------------------- #
-mcmc_nuts_acceptance(np, lp)
-mcmc_nuts_divergence(np, lp)
-
-
-# --------------------------------------------------- #
-#       Marginal effect for one covariate xj          #
-# --------------------------------------------------- #
-# Construct a small design grid Xnew varying xj, others at typical values
-# (adapt to your design naming)
-x_seq <- seq(from = -2, to = 2, length.out = 100)
-# example: use posterior means for other covariates = 0; add a group if needed
-# eta = alpha + beta_j * x_seq  (extend to full X as appropriate)
-eta_draws <- draws %>%
-  spread_draws(alpha_g[g], beta[i]) %>%
-  filter(g == 1, i == 1) %>%
-  slice_sample(n = 1000) %>%
-  tidyr::crossing(x = x_seq) %>%
-  mutate(eta = alpha_g + beta * x,  # pick your j
-         p = plogis(eta))
-
-marg <- eta_draws %>%
-  group_by(x) %>%
-  summarise(med = median(p), lo = quantile(p, .025), hi = quantile(p, .975))
-
-ggplot(marg, aes(x, med, ymin = lo, ymax = hi)) +
-  geom_ribbon(alpha = .15) + geom_line() +
-  labs(y = "Predicted probability", x = "x_j (standardized)")
-
-

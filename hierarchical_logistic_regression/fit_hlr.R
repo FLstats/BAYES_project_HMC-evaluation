@@ -47,14 +47,6 @@ X <- dat[, -c(1, length(dat))]
 # Index vector of complete case observations
 cc <- complete.cases(X)
 
-# Build model matrix. Factors become dummies with k-1 columns 
-# (the alphabetically first level gets dropped and set as baseline).
-# The function drops NAs.
-# ----------------------------------------- #
-###           only main effects           ###
-# ----------------------------------------- #
-# X <- model.matrix(~ . - 1, data = X)
-
 # ----------------------------------------- #
 ###     and all two-way interactions      ###
 # ----------------------------------------- #
@@ -120,31 +112,6 @@ util$check_all_diagnostics(fit)
 saveRDS(fit, file.path(getwd(), "stanfits", "hlr_fit_mlvl_alpha=cp_beta=cp_P=146.rds"))
 
 
-# #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### ####
-# #                                                                             #
-# #                 Fit multilevel hlr, alpha(ncp), beta(cp)                    #
-# #                                                                             #
-# #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### ####
-# nuts_controls <- list(max_treedepth = 10, adapt_delta = 0.99)
-# # (a_delta = 0.80)
-# # P=19 --> 77 div
-# # P=146 --> 7 div
-# 
-# # (a_delta = 0.99)
-# # P=19 --> 0 div
-# # P=146 --> 0 div, low EFMI
-# fit <- stan(file = "stan/hlr_multilevel_alpha=ncp_beta=cp.stan",
-#             data = data_list,
-#             seed = 42,
-#             chains = 4,
-#             iter = 2e3,
-#             refresh = 500,
-#             control = nuts_controls)
-# 
-# util$check_all_diagnostics(fit)
-# 
-# # saveRDS(fit, file.path(getwd(), "stanfits", "hlr_fit_mlvl_alpha=ncp_beta=cp_P=19.rds"))
-# # saveRDS(fit, file.path(getwd(), "stanfits", "hlr_fit_mlvl_alpha=ncp_beta=cp_P=146.rds"))
 
 #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### ####
 #                                                                             #
